@@ -4,9 +4,9 @@ public enum Category {
     ;
 
     public enum SocketService{
-        chat("chat");
+        chat("/chat");
 
-        private final String name;
+        public final String name;
         SocketService(String name){
             this.name=name;
         }
