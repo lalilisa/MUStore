@@ -3,6 +3,7 @@ package com.example.chatapplication.util;
 
 
 import com.example.chatapplication.common.Constant;
+import com.example.chatapplication.dto.view.UserView;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jwt;
@@ -111,17 +112,16 @@ public class JwtTokenUtil implements Serializable {
     }
 
     // generate token for client
-//    public String generateAccountToken(AccountJwtBodyDto accountJwtBodyDto, String secret, Date expire, Date transExpire) {
-//        Map<String, Object> claims = new HashMap<>();
-//
-//        return Jwts.builder()
-//                .setClaims(claims)
-//                .setSubject(accountJwtBodyDto.getAccountId())
-//                .setIssuedAt(transExpire)
-//                .setExpiration(expire)
-//                .signWith(SignatureAlgorithm.HS256, secret)
-//                .claim("e", accountJwtBodyDto.getExtraToken())
-//                .claim("c", accountJwtBodyDto.getChannelToken())
-//                .compact();
-//    }
+    public String generateAccountToken(UserView view, Date expire) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("userId",view.getId());
+        claims.put("role",view.getRole());
+        return Jwts.builder()
+                .setClaims(claims)
+                .setSubject(view.getUsername())
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(expire)
+                .signWith(SignatureAlgorithm.HS512, backendSecret)
+                .compact();
+    }
 }

@@ -7,4 +7,6 @@ public class Constant {
     public static final long JWT_ACCOUNT_AUTH_TOKEN_VALIDITY = 60 * 60;
     public static final long JWT_ACCOUNT_TRANS_TOKEN_VALIDITY = 5 * 60;
 
+    public static final int BAD_REQUEST = 400;
+
 }
