@@ -57,7 +57,7 @@ public class UserQueryService {
                 .email(domain.getEmail())
                 .fullname(domain.getFullname())
                 .username(domain.getUsername())
-                .phonnumber(domain.getPhonnumber())
+                .phonnumber(domain.getPhonenumber())
                 .role(domain.getRole())
                 .gender(domain.getGender())
                 .build();

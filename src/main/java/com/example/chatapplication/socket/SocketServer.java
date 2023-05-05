@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-//@Configuration
+@Configuration
 public class SocketServer {
 
     @Value("${socket.host}")
@@ -20,6 +20,7 @@ public class SocketServer {
         com.corundumstudio.socketio.Configuration configuration=new com.corundumstudio.socketio.Configuration();
         configuration.setHostname(host);
         configuration.setPort(port);
+        configuration.setPingTimeout(5000);
         return new SocketIOServer(configuration);
     }
 }

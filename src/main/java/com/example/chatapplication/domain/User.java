@@ -27,7 +27,7 @@ public class User extends Audiant{
     private String email;
 
     @Column(unique = true,name = "phonenumber")
-    private String phonnumber;
+    private String phonenumber;
 
     @Column(nullable = false,name = "password")
     private String password;
