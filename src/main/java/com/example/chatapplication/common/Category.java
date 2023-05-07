@@ -4,15 +4,26 @@ public enum Category {
     ;
 
     public enum SocketService{
-        chat("/chat");
-
+        chat("/chat"),
+        qr("/qr");
         public final String name;
         SocketService(String name){
             this.name=name;
         }
 
-    }
+    };
 
+    public enum EventLoginQr{
+
+        verifiQR("verifi-qr"),
+        checkIsUser("authen"),
+        responseLoginQr("login-response"),
+        clientConfirm("confirm");
+        public final String name;
+        EventLoginQr(String name){
+            this.name=name;
+        }
+    }
 
     public enum Role{
         USER,

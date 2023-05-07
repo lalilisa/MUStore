@@ -12,6 +12,7 @@ import javax.xml.bind.DatatypeConverter;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Base64;
 
 public class Utils {
 
@@ -28,5 +29,11 @@ public class Utils {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ImageIO.write(bufferedImage, "png", baos);
         return baos.toByteArray();
+    }
+
+    public static String decodeBase64(String hash){
+        Base64.Decoder decoder = Base64.getDecoder();
+        byte[] bytes = decoder.decode(hash);
+        return new String(bytes);
     }
 }

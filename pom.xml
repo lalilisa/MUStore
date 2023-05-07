@@ -86,6 +86,13 @@
             <artifactId>javase</artifactId>
             <version>3.3.0</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/io.socket/socket.io-client -->
+        <dependency>
+            <groupId>io.socket</groupId>
+            <artifactId>socket.io-client</artifactId>
+            <version>0.8.3</version>
+        </dependency>
+
         <dependency>
             <groupId>net.logstash.logback</groupId>
             <artifactId>logstash-logback-encoder</artifactId>

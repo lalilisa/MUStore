@@ -35,7 +35,6 @@ public class ChatModule {
         return client -> {
             HandshakeData handshakeData = client.getHandshakeData();
             log.info("Client[{}] - Connected to Chat module through '{}'", client.getSessionId().toString(), handshakeData.getUrl());
-            client.sendEvent("test", "testt");
         };
     }
     private DisconnectListener onDisconnected() {
@@ -46,6 +45,7 @@ public class ChatModule {
 
     public void onListeningVerifiQr(){
         String token = null;
+        log.info("Verifi Qr");
         this.namespace.addEventListener("verifi-qr", QRRawText.class, (client1, data, ackSender) -> {
             client1.sendEvent("authen", "sss");
             namespace.addEventListener("confirm", QrDataListener.class, (client, data1, ackSender1) -> {

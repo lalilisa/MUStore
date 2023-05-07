@@ -17,6 +17,14 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 
 @Configuration
@@ -63,17 +71,17 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
         http.addFilterBefore(jwtRequestFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 
-//    @Bean
-//    public CorsConfigurationSource corsConfigurationSource() {
-//        List<String> listDomain = Arrays.asList(domains.split(","));
-//        CorsConfiguration configuration = new CorsConfiguration();
-//        configuration.setAllowedOrigins(listDomain);
-//        configuration.setAllowedMethods(Collections.singletonList("*"));
-//        configuration.setAllowedHeaders(Collections.singletonList("*"));
-//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-//        source.registerCorsConfiguration("/**", configuration);
-//        return source;
-//    }
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(new ArrayList<>(){{add("*");}});
+        configuration.setAllowedMethods(Collections.singletonList("*"));
+        configuration.setAllowedHeaders(Collections.singletonList("*"));
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
 
 
 }

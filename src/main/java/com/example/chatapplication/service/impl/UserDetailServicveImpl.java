@@ -1,5 +1,8 @@
 package com.example.chatapplication.service.impl;
 
+import com.example.chatapplication.repo.UserRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -12,11 +15,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service("userDetailsService")
+
 public class UserDetailServicveImpl implements UserDetailsService {
+
+    @Autowired
+    private UserRepository userRepository;
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
-        grantedAuthorities.add(new SimpleGrantedAuthority("ADMIN"));
-        return new User("trimai","trimai",grantedAuthorities);
+        com.example.chatapplication.domain.User user=userRepository.findByUsername(username);
+        List<GrantedAuthority> authorities=new ArrayList<>();
+        authorities.add(new SimpleGrantedAuthority(user.getRole().name()));
+        return new org.springframework.security.core.userdetails.User(user.getUsername(),user.getPassword(),authorities);
     }
 }

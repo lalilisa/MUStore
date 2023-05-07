@@ -3,6 +3,7 @@ package com.example.chatapplication.util;
 
 
 import com.example.chatapplication.common.Constant;
+import com.example.chatapplication.domain.User;
 import com.example.chatapplication.dto.view.UserView;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Header;
@@ -124,4 +125,17 @@ public class JwtTokenUtil implements Serializable {
                 .signWith(SignatureAlgorithm.HS512, backendSecret)
                 .compact();
     }
+    public String generateAccountToken(User view, Date expire) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("userId",view.getId());
+        claims.put("role",view.getRole());
+        return Jwts.builder()
+                .setClaims(claims)
+                .setSubject(view.getUsername())
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(expire)
+                .signWith(SignatureAlgorithm.HS512, backendSecret)
+                .compact();
+    }
+
 }
