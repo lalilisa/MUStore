@@ -9,6 +9,7 @@ import com.example.chatapplication.dto.request.PhonenumberRequest;
 import com.example.chatapplication.dto.request.RegisterRequest;
 import com.example.chatapplication.dto.response.LoginResponse;
 import com.example.chatapplication.dto.response.OtpResponse;
+import com.example.chatapplication.dto.response.QrLogin;
 import com.example.chatapplication.dto.view.UserView;
 import com.example.chatapplication.service.read.UserQueryService;
 import com.example.chatapplication.service.write.OtpCommandService;
@@ -17,6 +18,7 @@ import com.google.zxing.WriterException;
 import com.twilio.rest.api.v2010.account.Message;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -79,15 +81,12 @@ public class AuthController {
         return ResponseEntity.ok(otpCommandService.verifiOtp(request.getTransactionId(),request.getOtp()));
     }
     private final static String symbol="%";
-    @GetMapping(value = "get-qr",produces = MediaType.IMAGE_JPEG_VALUE)
+    @GetMapping(value = "get-qr")
     public ResponseEntity<?> genQrLogin(Authentication authentication, HttpServletResponse response) throws IOException, WriterException {
         UserDetails userDetails= (UserDetails) authentication.getPrincipal();
         long expireTime=new Date().getTime()+(long)60000;
         String socketKey= UUID.randomUUID().toString();
-        Cookie cookie = new Cookie("socketKey",socketKey);
-        cookie.setMaxAge(600);
-        response.addCookie(cookie);
         String raw=userDetails.getUsername().concat(symbol).concat(Long.toString(expireTime)).concat(symbol).concat(socketKey);
-        return ResponseEntity.ok(Utils.genQrCode(raw));
+        return ResponseEntity.ok(QrLogin.builder().img(Utils.genQrCode(raw)).socketKey(socketKey).build());
     }
 }

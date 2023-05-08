@@ -11,6 +11,7 @@ import com.example.chatapplication.common.Constant;
 import com.example.chatapplication.common.Utils;
 import com.example.chatapplication.domain.User;
 import com.example.chatapplication.dto.response.LoginResponse;
+import com.example.chatapplication.dto.response.LoginSocketResponse;
 import com.example.chatapplication.dto.view.UserView;
 import com.example.chatapplication.repo.UserRepository;
 import com.example.chatapplication.socket.datalistner.QRRawText;
@@ -61,16 +62,23 @@ public class QRModule {
     public void onListeningVerifiQr(){
         log.info("Verifi Qr");
         this.namespace.addEventListener(Category.EventLoginQr.verifiQR.name, QRRawText.class, (client1, data, ackSender) -> {
+            System.out.println(data.getHashCode());
             String raw= Utils.decodeBase64(data.getHashCode());
+            System.out.println(raw);
             String [] result = raw.split("%");
             String socketKey=result[2];
             String expire=result[1];
             String usernameQr=result[0];
             if(Long.parseLong(expire) < new Date().getTime()){
-                JSONObject jsonObject=new JSONObject();
-                jsonObject.put("status",0);
-                jsonObject.put("message","Xác thực thất bại");
-                client1.sendEvent(Category.EventLoginQr.responseLoginQr.name,jsonObject);
+                LoginSocketResponse loginSocketResponse=LoginSocketResponse.builder()
+                        .status(0)
+                        .accessToken(null)
+                        .userId(null)
+                        .role(null)
+                        .refreshToken(null)
+                        .expireAccressToken(null)
+                        .build();
+                client1.sendEvent(Category.EventLoginQr.responseLoginQr.name,loginSocketResponse);
                 return;
             }
             SocketIOClient clientWebAuthen=findSocketClientInNamespace(socketKey);
@@ -88,7 +96,8 @@ public class QRModule {
                 String accessToken=jwtTokenUtil.generateAccountToken(user,expireAccess);
                 String refreshToken=jwtTokenUtil.generateAccountToken(user,expireRefresh);
                 client1.sendEvent(Category.EventLoginQr.responseLoginQr.name,
-                        LoginResponse.builder()
+                        LoginSocketResponse.builder()
+                                .status(1)
                                 .accessToken(accessToken)
                                 .userId(user.getId())
                                 .role(user.getRole())

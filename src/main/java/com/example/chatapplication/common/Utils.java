@@ -32,8 +32,7 @@ public class Utils {
     }
 
     public static String decodeBase64(String hash){
-        Base64.Decoder decoder = Base64.getDecoder();
-        byte[] bytes = decoder.decode(hash);
-        return new String(bytes);
+        byte[] result = DatatypeConverter.parseBase64Binary(hash);
+        return new String(result);
     }
 }
