@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 // Base CRUD chung cho các implement
 public abstract  class  AbstractJpaDAO<T extends Serializable> {
-    private Class<T> clazz;
+    private final Class<T> clazz;
 
     @PersistenceContext(unitName = "entityManagerFactory")
     private EntityManager entityManager;
@@ -57,7 +57,7 @@ public abstract  class  AbstractJpaDAO<T extends Serializable> {
     }
     // trả về  danh sách dữ liệu của entity
     @SuppressWarnings("unchecked")
-    public ResponseListAll findsEntity(QueryDto queryDto) throws JsonProcessingException {
+    public ResponseListAll<T> findsEntity(QueryDto queryDto) throws JsonProcessingException {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(clazz);
         Root<T> root = criteriaQuery.from(clazz);
@@ -74,7 +74,7 @@ public abstract  class  AbstractJpaDAO<T extends Serializable> {
         int currentPage=queryDto.getPageNumber();
         List<T> data=executeQuery.getResultList();
         int currentData= data.size();
-        return  new ResponseListAll(totalPage,currentPage,currentData,data);
+        return new ResponseListAll<>(totalPage, currentPage, currentData, data, data);
     }
 
     // tạo query cuối cùng trc khi execute
@@ -88,7 +88,7 @@ public abstract  class  AbstractJpaDAO<T extends Serializable> {
     private CriteriaQuery<T> createQuerySort(CriteriaBuilder criteriaBuilder, CriteriaQuery<T> criteriaQuery, Root<T> root, QueryDto queryDto) {
         if (queryDto.getSort() != null) {
             List<Order> listOrder = new ArrayList<>();
-            List<String> sorts = Arrays.stream(queryDto.getSort()).map(sort -> sort).collect(Collectors.toList());
+            List<String> sorts = Arrays.stream(queryDto.getSort()).collect(Collectors.toList());
             for (String orderCol : sorts) {
                 if(orderCol.contains("-")) {
                     orderCol=orderCol.replace("-","");
@@ -106,6 +106,7 @@ public abstract  class  AbstractJpaDAO<T extends Serializable> {
     // tạo predicate filter
     public  Predicate predicateFilter(CriteriaBuilder criteriaBuilder,CriteriaQuery<T> criteriaQuery  , Root<T> root, QueryDto queryDto) throws JsonProcessingException {
         queryDto.setFilters();
+
         List<Predicate> listFilters=new ArrayList<>();
         if(queryDto.getFilters()!=null) {
             queryDto.getFilters().forEach((key, value) -> {
@@ -159,13 +160,13 @@ public abstract  class  AbstractJpaDAO<T extends Serializable> {
         List<Predicate> predicates =new ArrayList<>();
         if(queryDto.getSearch()==null)
             queryDto.setSearch("");
-
-        predicates = Arrays.stream(queryDto.getProperty()).
-                map(field ->criteriaBuilder.or(
-                        (criteriaBuilder
-                                .like(
-                                        criteriaBuilder.lower(root.<String>get(field)), "%" + queryDto.getSearch() + "%")))).collect(Collectors.toList());
-
+        if(queryDto.getProperty()!=null) {
+            predicates = Arrays.stream(queryDto.getProperty()).
+                    map(field -> criteriaBuilder.or(
+                            (criteriaBuilder
+                                    .like(
+                                            criteriaBuilder.lower(root.<String>get(field)), "%" + queryDto.getSearch() + "%")))).collect(Collectors.toList());
+        }
         return criteriaBuilder.or(predicates.toArray(new Predicate[predicates.size()]));
     }
 }

@@ -43,6 +43,7 @@ public class QueryDto {
     public void setFilters() throws JsonProcessingException {
         if(this.filter!=null && this.filter.length()>0) {
             ObjectMapper objectMapper = new ObjectMapper();
+            System.out.println(filter);
             this.filters = objectMapper.readValue(filter, Map.class);
         }
     }

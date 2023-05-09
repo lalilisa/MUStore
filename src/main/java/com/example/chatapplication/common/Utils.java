@@ -13,6 +13,8 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Base64;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Utils {
 
@@ -34,5 +36,10 @@ public class Utils {
     public static String decodeBase64(String hash){
         byte[] result = DatatypeConverter.parseBase64Binary(hash);
         return new String(result);
+    }
+
+    public static Map<String,String> toQueryMap(String target){
+
+        return new HashMap<>();
     }
 }
