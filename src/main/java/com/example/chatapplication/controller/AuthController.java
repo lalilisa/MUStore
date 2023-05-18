@@ -60,6 +60,7 @@ public class AuthController {
                     .accessToken(accessToken)
                     .refreshToken(refreshToken)
                     .expireAccressToken(expireAccess)
+                 .isNotifi(user.getIsNotifi())
                     .build());
     }
 

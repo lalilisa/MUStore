@@ -23,4 +23,5 @@ public class UserView {
     private String fullname;
     private Integer gender;
     private Category.Role role;
+    private Integer isNotifi;
 }

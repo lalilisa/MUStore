@@ -1,4 +1,4 @@
-package com.example.chatapplication.socket.chat;
+package com.example.chatapplication.socket.module;
 
 import com.corundumstudio.socketio.HandshakeData;
 import com.corundumstudio.socketio.SocketIOClient;
@@ -10,15 +10,11 @@ import com.example.chatapplication.common.Category;
 import com.example.chatapplication.common.Constant;
 import com.example.chatapplication.common.Utils;
 import com.example.chatapplication.domain.User;
-import com.example.chatapplication.dto.response.LoginResponse;
 import com.example.chatapplication.dto.response.LoginSocketResponse;
-import com.example.chatapplication.dto.view.UserView;
 import com.example.chatapplication.repo.UserRepository;
 import com.example.chatapplication.socket.datalistner.QRRawText;
 import com.example.chatapplication.socket.datalistner.QrDataListener;
 import com.example.chatapplication.util.JwtTokenUtil;
-import lombok.RequiredArgsConstructor;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

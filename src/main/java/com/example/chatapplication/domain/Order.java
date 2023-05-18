@@ -17,7 +17,9 @@ public class Order extends Audiant{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(name = "code",unique = true)
 
+    private String orderCode;
     @Column(name = "total")
     private Double total;
 
@@ -26,4 +28,7 @@ public class Order extends Audiant{
 
     @Column(name = "status")
     private Integer status;
+
+    @Column(name = "address")
+    private String address;
 }

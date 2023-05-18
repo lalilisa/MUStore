@@ -4,9 +4,11 @@ package com.example.chatapplication.service.read;
 import com.example.chatapplication.common.Category;
 import com.example.chatapplication.common.Constant;
 import com.example.chatapplication.common.Utils;
+import com.example.chatapplication.domain.Cart;
 import com.example.chatapplication.domain.User;
 import com.example.chatapplication.dto.view.UserView;
 import com.example.chatapplication.exception.GeneralException;
+import com.example.chatapplication.repo.CartRepository;
 import com.example.chatapplication.repo.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -20,6 +22,8 @@ public class UserQueryService{
 
     private final UserRepository userRepository;
 
+    private final CartRepository cartRepository;
+
 
     public UserView createUser(String username,String password,String email){
         User existedUser=userRepository.findByEmailOrUsername(email,username);
@@ -31,17 +35,25 @@ public class UserQueryService{
                 .password(hashPassword)
                 .email(email)
                 .gender(0)
+                .isNotifi(0)
                 .role(Category.Role.USER)
                 .build();
-
-        return this.convertToView(userRepository.save(user));
+        User newUser=userRepository.save(user);
+        initCart(newUser);
+        return this.convertToView(newUser);
     }
-
-    public UserView login(String username,String password){
-        BCryptPasswordEncoder encoder=new BCryptPasswordEncoder();
+    public UserView getUserInfo(String username){
         User user=userRepository.findByUsername(username);
         if(user==null)
             throw new GeneralException(Constant.BAD_REQUEST,Category.ErrorCodeEnum.INVALID_PARAMETER.name(),"User is not exist");
+        return this.convertToView(user);
+    }
+    public UserView login(String username,String password){
+
+        User user=userRepository.findByUsername(username);
+        if(user==null)
+            throw new GeneralException(Constant.BAD_REQUEST,Category.ErrorCodeEnum.INVALID_PARAMETER.name(),"User is not exist");
+        BCryptPasswordEncoder encoder=new BCryptPasswordEncoder();
         if(!encoder.matches(password,user.getPassword()))
             throw new GeneralException(Constant.BAD_REQUEST,Category.ErrorCodeEnum.INVALID_PARAMETER.name(),"Password is not correct");
         return this.convertToView(user);
@@ -60,6 +72,11 @@ public class UserQueryService{
                 .phonnumber(domain.getPhonenumber())
                 .role(domain.getRole())
                 .gender(domain.getGender())
+                .isNotifi(domain.getIsNotifi())
                 .build();
+    }
+
+    private void initCart(User user){
+        cartRepository.save(Cart.builder().userId(user.getId()).build());
     }
 }

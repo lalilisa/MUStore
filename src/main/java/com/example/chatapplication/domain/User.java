@@ -47,4 +47,7 @@ public class User extends Audiant{
     @Column(name = "role",columnDefinition = "enum('ADMIN','USER') DEFAULT 'USER'")
     @Enumerated(EnumType.STRING)
     private Category.Role role;
+
+    @Column(name = "is_notifi",columnDefinition = "tinyint(1) DEFAULT '0'")
+    private Integer isNotifi;
 }

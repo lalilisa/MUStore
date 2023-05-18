@@ -21,6 +21,9 @@ public class OrderDetail extends Audiant{
     @Column(name = "order_id")
     private Long orderId;
 
+    @Column(name = "product_name")
+    private String productName;
+
     @Column(name = "product_id")
     private Long productId;
 
@@ -32,4 +35,11 @@ public class OrderDetail extends Audiant{
 
     @Column(name = "img")
     private String img;
+
+    @Column(name = "discount")
+    private Double discount;
+
+    @Column(name = "category_id")
+    private Long categoryId;
+
 }

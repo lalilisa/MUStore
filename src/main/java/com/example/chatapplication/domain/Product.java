@@ -41,4 +41,6 @@ public class Product extends Audiant implements Serializable {
 
     @Column(name = "category_id")
     private Long categoryId;
+    @Column(name = "description")
+    private String description;
 }

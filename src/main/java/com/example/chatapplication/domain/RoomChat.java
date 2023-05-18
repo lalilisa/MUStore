@@ -5,21 +5,19 @@ import lombok.*;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "device_token")
+@Table(name = "room_chat")
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Setter
 @Getter
 @ToString
-public class DeviceToken extends Audiant{
+public class RoomChat extends Audiant{
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "fcm_token")
-    private String fcmToken;
-
-    @Column(name ="user_id" )
-    private Long userId;
+    @Column(name = "members")
+    private String memberIds;
 }

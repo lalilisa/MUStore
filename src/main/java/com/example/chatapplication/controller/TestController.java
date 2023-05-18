@@ -2,32 +2,30 @@ package com.example.chatapplication.controller;
 
 
 import com.example.chatapplication.common.Utils;
-import com.example.chatapplication.socket.chat.ChatModule;
+import com.example.chatapplication.domain.User;
+import com.example.chatapplication.dto.request.Notice;
+import com.example.chatapplication.service.write.FireBaseNotifiCommandService;
+import com.example.chatapplication.socket.module.ChatModule;
 import com.google.zxing.WriterException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.net.ServerSocket;
-import java.rmi.ServerError;
+import java.util.HashMap;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 @RestController
 @RequestMapping("api")
 @CrossOrigin
+@RequiredArgsConstructor
 public class TestController {
 
+    private final FireBaseNotifiCommandService fireBaseNotifiCommandService;
     @Autowired
     private ChatModule chatModule;
     @GetMapping(value = "get-qr",produces = MediaType.IMAGE_JPEG_VALUE)
@@ -39,8 +37,26 @@ public class TestController {
 
     @GetMapping("test")
     public ResponseEntity<?> testSocket() {
-        chatModule.send();
-        chatModule.onListeningVerifiQr();
+
         return ResponseEntity.ok("trimai");
+    }
+
+    @PostMapping("notifi")
+    public ResponseEntity<?> testNOti(@RequestBody Notice notice){
+        asyncNotifi(notice);
+        return ResponseEntity.ok("TRIMAIs");
+    }
+    private final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
+    private void asyncNotifi(Notice notice){
+        CompletableFuture.runAsync(() -> {
+            try {
+                // Wait for 3 seconds
+                Thread.sleep(3000);
+                fireBaseNotifiCommandService.sendNotification(notice);
+
+            } catch (InterruptedException e) {
+                //TODO
+            }
+        }, executorService);
     }
 }

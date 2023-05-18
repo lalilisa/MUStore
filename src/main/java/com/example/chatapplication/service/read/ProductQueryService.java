@@ -1,13 +1,11 @@
 package com.example.chatapplication.service.read;
 
 import com.example.chatapplication.domain.Product;
-import com.example.chatapplication.dto.query.QueryDto;
 import com.example.chatapplication.dto.query.QueryProduct;
-import com.example.chatapplication.dto.response.ResponseListAll;
+import com.example.chatapplication.dto.view.ProductView;
+import com.example.chatapplication.repo.CategoryRepository;
 import com.example.chatapplication.repo.ProductRepository;
 import com.example.chatapplication.service.impl.AbstractJpaDAO;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -21,18 +19,19 @@ import java.util.List;
 public class ProductQueryService extends AbstractJpaDAO<Product> {
 
     private final ProductRepository productRepository;
-
-    public ProductQueryService(ProductRepository productRepository) {
+    private final CategoryRepository categoryRepository;
+    public ProductQueryService(ProductRepository productRepository, CategoryRepository categoryRepository) {
         super(Product.class);
         this.productRepository = productRepository;
+        this.categoryRepository = categoryRepository;
     }
 
 
-    public Product findOne(long id){
+    public ProductView findOnes(long id){
         Product product= productRepository.findById(id).orElse(null);
         if(product!=null)
             product.setView(product.getView()+1);
-        return product;
+        return this.convertToView(productRepository.save(product));
     }
 
 
@@ -56,6 +55,23 @@ public class ProductQueryService extends AbstractJpaDAO<Product> {
         }
 
         return orders;
+    }
+
+    private ProductView convertToView(Product product){
+        com.example.chatapplication.domain.Category category=categoryRepository.findById(product.getCategoryId()).orElse(null);
+        return ProductView.builder()
+                .id(product.getId())
+                .code(product.getCode())
+                .categoryId(product.getCategoryId())
+                .description(product.getDescription())
+                .name(product.getName())
+                .discount(product.getDiscount())
+                .img(product.getImg())
+                .price(product.getPrice())
+                .view(product.getView())
+                .quantity(product.getQuantity())
+                .categoryName(category!=null? category.getName():null)
+                .build();
     }
 
 }

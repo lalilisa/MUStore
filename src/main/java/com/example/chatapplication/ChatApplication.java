@@ -6,10 +6,14 @@ import com.twilio.type.PhoneNumber;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 import javax.annotation.PostConstruct;
+import java.util.Date;
+import java.util.TimeZone;
 
 @SpringBootApplication
+@EnableScheduling
 public class ChatApplication {
     @Value("${TWILIO_ACCOUNT_SID}")
     private String sid;
