@@ -12,7 +12,7 @@ import java.util.Date;
 @NoArgsConstructor
 @Builder
 @Data
-public class ChatMessage implements Serializable {
+public class ChatData implements Serializable {
 
     private Long senderId;
     private Long reciverId;

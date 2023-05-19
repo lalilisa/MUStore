@@ -12,7 +12,8 @@ import javax.persistence.*;
 @Setter
 @Getter
 @ToString
-public class Notifications {
+public class Notifications extends Audiant
+{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,4 +36,5 @@ public class Notifications {
 
     @Column(name = "type")
     private String type;
+
 }

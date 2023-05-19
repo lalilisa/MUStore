@@ -22,7 +22,7 @@ public class NotificationController {
         UserDetails userDetails=(UserDetails) authentication.getPrincipal();
         return notificationQueryService.tokenNotifi(userDetails.getUsername(),fcmToken.getToken());
     }
-    @GetMapping("")
+    @GetMapping("me")
     public List<Notifications> myNotification(Authentication authentication){
         UserDetails userDetails=(UserDetails) authentication.getPrincipal();
         return notificationQueryService.myNotifi(userDetails.getUsername());

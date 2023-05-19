@@ -67,6 +67,9 @@ public class OrderCommandService {
                 .img(view.getImg())
                 .price(view.getPrice())
                 .productId(view.getId())
+                .productName(view.getName())
+                .categoryId(view.getCategoryId())
+                .discount(view.getDiscount())
                 .quantity(view.getQuantity())
                 .build();
     }
@@ -85,8 +88,8 @@ public class OrderCommandService {
             Map<String,String> map=new HashMap<>();
             map.put("type","ORDER");
             Notice notice=Notice.builder()
-                    .subject("Đặt hàng thành công")
-                    .content("Bạn đã đặt hàng thành công. Nhớ theo dõi để nhận hàng nhé")
+                    .subject("Đặt hàng thành công \n")
+                    .content("Bạn đã đặt hàng thành công \n"+"Nhớ theo dõi để nhận hàng nhé.")
                     .data(map)
                     .image(img)
                     .registrationTokens(new ArrayList<>() {{

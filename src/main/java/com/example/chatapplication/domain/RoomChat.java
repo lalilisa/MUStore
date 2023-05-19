@@ -18,6 +18,9 @@ public class RoomChat extends Audiant{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "members")
-    private String memberIds;
+    @Column(name = "adminId")
+    private Long adminId;
+
+    @Column(name = "userId")
+    private Long userId;
 }

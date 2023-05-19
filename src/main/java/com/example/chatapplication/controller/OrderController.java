@@ -21,8 +21,8 @@ public class OrderController {
     private final OrderCommandService orderCommandService;
     private final OrderQueryService orderQueryService;
     @GetMapping("my-order")
-    public List<MyOrders> getMyOrder(Authentication authentication,@RequestBody List<ProductView> orderDetail
-            ,@RequestParam("address") String address){
+    public List<MyOrders> getMyOrder(Authentication authentication)
+            {
         UserDetails userDetails=(UserDetails) authentication.getPrincipal();
         return orderQueryService.getMyOrder(userDetails.getUsername());
     }

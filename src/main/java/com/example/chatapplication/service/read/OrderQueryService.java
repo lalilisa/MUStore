@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,13 +34,33 @@ public class OrderQueryService {
         }
         List<Order> orders=orderRepository.findByCartId(cart.getId());
 
-       return   orders.stream().map(order ->
-               MyOrders.builder()
-               .address(order.getAddress())
-               .name(user.getFullname())
-               .totalPrice(order.getTotal())
-               .productViews(null)
-               .build()).collect(Collectors.toList());
+
+       return   orders.stream().map(order ->{
+           List<OrderDetail> orderDetails=orderDetailRepository.getOrderDetailByOrderId(order.getId());
+           List<ProductView> productViews =orderDetails.stream().map(orderDetail -> ProductView.builder()
+                   .id(orderDetail.getProductId())
+                   .quantity(orderDetail.getQuantity())
+                   .price(orderDetail.getPrice())
+                   .img(orderDetail.getImg())
+                   .name(orderDetail.getProductName())
+                   .discount(orderDetail.getDiscount())
+                   .categoryId(orderDetail.getCategoryId())
+                   .view(0)
+                   .categoryName("ss")
+                   .code("")
+                   .build()
+                   ).collect(Collectors.toList());
+           return   MyOrders.builder()
+                   .address(order.getAddress())
+                   .name(user.getFullname())
+                   .code(order.getOrderCode())
+                   .createdAt(order.getCreatedAt())
+                   .totalPrice(order.getTotal())
+                   .status(order.getStatus())
+                   .productViews(productViews)
+                   .build();
+               }
+       ).collect(Collectors.toList());
     }
 
 }
