@@ -2,6 +2,7 @@ package com.example.chatapplication.domain;
 
 
 import com.example.chatapplication.common.Category;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import javax.persistence.*;
@@ -32,6 +33,7 @@ public class User extends Audiant{
     @Column(nullable = false,name = "password")
     private String password;
 
+    @JsonFormat(pattern = "dd/MM/yyyy")
     @Column(name = "dob")
     private Date dob;
 

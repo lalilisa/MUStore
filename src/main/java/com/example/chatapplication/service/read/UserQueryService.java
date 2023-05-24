@@ -14,6 +14,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -78,5 +81,13 @@ public class UserQueryService{
 
     private void initCart(User user){
         cartRepository.save(Cart.builder().userId(user.getId()).build());
+    }
+
+    public List<UserView> getUser(String username){
+        User user=userRepository.findByUsername(username);
+        List<Long> ids=new ArrayList<>(){{add(user.getId());}};
+        if(user.getRole().name().equals("ADMIN"))
+              return  userRepository.findByIdNotIn(ids).stream().map(this::convertToView).collect(Collectors.toList());
+        return userRepository.findByRoleAndIdNotIn(Category.Role.ADMIN,ids).stream().map(user1 -> convertToView(user1)).collect(Collectors.toList());
     }
 }

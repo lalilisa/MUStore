@@ -42,6 +42,7 @@ public class UserCommandService {
         if(!encoder.matches(changePassword.getOldPass(),user.getPassword()))
             throw new GeneralException(Constant.BAD_REQUEST,Category.ErrorCodeEnum.INVALID_PARAMETER.name(),"Password is not correct");
         user.setPassword(Utils.hashPassword(changePassword.getNewPass()));
+        userRepository.save(user);
         return ResponseMessage.builder().message("SUCCESS").build();
     }
     private UserView convertToView(User domain){

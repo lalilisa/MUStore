@@ -3,6 +3,7 @@ package com.example.chatapplication.controller;
 
 import com.example.chatapplication.common.Constant;
 import com.example.chatapplication.common.Utils;
+import com.example.chatapplication.domain.User;
 import com.example.chatapplication.dto.request.LoginRequest;
 import com.example.chatapplication.dto.request.OtpVerifi;
 import com.example.chatapplication.dto.request.PhonenumberRequest;
@@ -10,7 +11,9 @@ import com.example.chatapplication.dto.request.RegisterRequest;
 import com.example.chatapplication.dto.response.LoginResponse;
 import com.example.chatapplication.dto.response.OtpResponse;
 import com.example.chatapplication.dto.response.QrLogin;
+import com.example.chatapplication.dto.response.ResponseMessage;
 import com.example.chatapplication.dto.view.UserView;
+import com.example.chatapplication.repo.UserRepository;
 import com.example.chatapplication.service.read.UserQueryService;
 import com.example.chatapplication.service.write.OtpCommandService;
 import com.example.chatapplication.util.JwtTokenUtil;
@@ -21,16 +24,23 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.security.SecureRandom;
 import java.util.Base64;
 import java.util.Date;
+import java.util.Random;
 import java.util.UUID;
 
 @RestController
@@ -89,5 +99,32 @@ public class AuthController {
         String socketKey= UUID.randomUUID().toString();
         String raw=userDetails.getUsername().concat(symbol).concat(Long.toString(expireTime)).concat(symbol).concat(socketKey);
         return ResponseEntity.ok(QrLogin.builder().img(Utils.genQrCode(raw)).socketKey(socketKey).build());
+    }
+    public static String autogenPassword(){
+        return new Random().ints(10, 33, 122).collect(StringBuilder::new,
+                StringBuilder::appendCodePoint, StringBuilder::append)
+                .toString();
+    }
+    private final UserRepository userRepository;
+    private final JavaMailSender javaMailSender;
+    @PostMapping("forget-password")
+    public ResponseEntity<?> forgetPassword(@RequestParam("email") String email) throws IOException, WriterException, MessagingException {
+        User user= userRepository.findByEmail(email);
+        BCryptPasswordEncoder encoder=new BCryptPasswordEncoder();
+        String newPass=autogenPassword();
+        user.setPassword(hashPassword("trimai"));
+        userRepository.save(user);
+        MimeMessage mimeMessage=javaMailSender.createMimeMessage();
+        MimeMessageHelper mimeMessageHelper =new MimeMessageHelper(mimeMessage,true);
+        mimeMessageHelper.setTo(email);
+        mimeMessageHelper.setText(String.format("Mật khẩu mới của bạn là %s . Tuyệt đối không được cung cấp cho người khác", newPass));
+        javaMailSender.send(mimeMessage);
+        return ResponseEntity.ok(ResponseMessage.builder().message("Vui lòng check Email của bạn").build());
+    }
+    public static String hashPassword(String plainText){
+        int salt = 10;
+        BCryptPasswordEncoder bCryptPasswordEncoder =
+                new BCryptPasswordEncoder(salt, new SecureRandom());
+        return bCryptPasswordEncoder.encode(plainText);
     }
 }

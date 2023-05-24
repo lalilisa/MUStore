@@ -17,5 +17,6 @@ public class ChatData implements Serializable {
     private Long senderId;
     private Long reciverId;
     private String content;
+    private String room;
     private Date sentAt;
 }

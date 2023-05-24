@@ -36,4 +36,10 @@ public class UserController {
         UserDetails userDetails=(UserDetails) authentication.getPrincipal();
         return userCommandService.changePassword(userDetails.getUsername(),changePassword);
     }
+
+    @GetMapping("list-user")
+    public ResponseEntity<?> getUser(Authentication authentication){
+        UserDetails userDetails=(UserDetails) authentication.getPrincipal();
+        return ResponseEntity.ok(userQueryService.getUser(userDetails.getUsername()));
+    }
 }

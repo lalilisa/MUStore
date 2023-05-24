@@ -46,7 +46,7 @@ public class NotificationQueryService {
         User user=userRepository.findByUsername(username);
         if(user==null)
             throw new GeneralException(Category.ErrorCodeEnum.INVALID_PARAMETER.name(),"User is not exist");
-       return notificationsRepository.findByUserId(user.getId());
+       return notificationsRepository.findByUserIdOrderByCreatedAtDesc(user.getId());
     }
 
     /*@Scheduled(cron = "")
